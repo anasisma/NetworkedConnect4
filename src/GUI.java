@@ -1,12 +1,8 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.*;
-import java.net.*;
 
 public class GUI extends JFrame {
 
-    private Board board;
+    private final Board board;
 
     GUI() {
         setTitle("Connect 4");
@@ -18,7 +14,7 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         GUI g = new GUI();
         Game game = g.board.getGame();
         game.connectToServer();

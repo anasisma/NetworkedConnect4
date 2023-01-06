@@ -4,17 +4,14 @@ import java.awt.event.*;
 
 public class Board extends JPanel implements MouseListener {
     int slotSize = 70;
-    private Color[][] grid = new Color[6][7];
+    private final Color[][] grid = new Color[6][7];
 
-    private Game game;
+    private final Game game;
 
     private final Color Circles = new Color(229, 208, 220);
     private final Color BG = new Color(205, 179, 219);
     private final Color Purple = new Color(138, 105, 166);
     private final Color Pink = new Color(201, 126, 169);
-
-    private final int startX = 85;
-    private final int startY = 85;
 
     public Board() {
         game = new Game();
@@ -86,6 +83,8 @@ public class Board extends JPanel implements MouseListener {
     }
 
     public void drawCells(Graphics g) {
+        int startX = 85;
+        int startY = 85;
         int currX = startX;
         int currY = startY;
 
@@ -127,7 +126,7 @@ public class Board extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!game.winnerExists() && !game.quitting()) {
+        if (!game.winnerExists() && !game.quitting() && !game.error()) {
             int col = (e.getX() - 80) / (slotSize + 10);
 //            int player = game.getPlayer();
             int row = game.setPlay(col);

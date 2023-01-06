@@ -70,21 +70,21 @@ public class GameServer {
         }
     }
 
-    public boolean didPinkWin() {
-        return pinkWon;
-    }
+//    public boolean didPinkWin() {
+//        return pinkWon;
+//    }
 
-    public boolean winnerExists() {
-        return purpWon || pinkWon;
-    }
+//    public boolean winnerExists() {
+//        return purpWon || pinkWon;
+//    }
 
-    public int getPinkScore() {
-        return pinkScore;
-    }
+//    public int getPinkScore() {
+//        return pinkScore;
+//    }
 
-    public int getPurpScore() {
-        return purpScore;
-    }
+//    public int getPurpScore() {
+//        return purpScore;
+//    }
 
     public void purpWon() {
         purpScore++;
@@ -96,9 +96,9 @@ public class GameServer {
         pinkWon = true;
     }
 
-    public int[][] getBoard() {
-        return board;
-    }
+//    public int[][] getBoard() {
+//        return board;
+//    }
 
     private boolean getWinHor(int col, int row, int player) {
         try {
@@ -230,7 +230,6 @@ public class GameServer {
                 dataOut.flush();
 
                 while (turnsMade < maxTurns) {
-                    System.out.println(playerID);
                     String receivedData = dataIn.readUTF();
 
                     char last = receivedData.charAt(receivedData.length() - 1);
@@ -311,7 +310,7 @@ public class GameServer {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         GameServer gs = new GameServer();
         gs.acceptConnections();
     }

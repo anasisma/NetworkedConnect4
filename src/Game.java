@@ -40,7 +40,7 @@ public class Game {
 
     public void startReceiving() {
         Thread t = new Thread(() -> {
-            while (!csc.isClosed() && !serverError) {
+            while (!serverError) {
                 csc.receiveServerData();
             }
         });
@@ -74,12 +74,8 @@ public class Game {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                serverError = true;
             }
-        }
-
-        public boolean isClosed() {
-            return socket.isClosed();
         }
 
         public void sendServerData(String s) {
@@ -180,7 +176,7 @@ public class Game {
     public int setPlay(int i) {
         int k = -1;
 
-        if (yourTurn && numPlayers == 2) {
+        if (yourTurn && numPlayers == 2 && !serverError) {
             for (int[] ints : board) {
                 if (ints[i] == 0)
                     k++;
@@ -201,10 +197,7 @@ public class Game {
         board = new int[6][7];
         pinkWon = false;
         winnerExists = false;
-        if (playerID == 1)
-            yourTurn = true;
-        else
-            yourTurn = false;
+        yourTurn = playerID == 1;
         csc.sendServerData("i");
     }
 
