@@ -130,6 +130,7 @@ public class Game {
                     System.out.println("Other user quit :(");
                     quit = true;
                     numPlayers = 1;
+                    this.socket.close();
                 } else if (last == 'r') {
                     restart();
                 }

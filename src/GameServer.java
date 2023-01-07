@@ -13,17 +13,23 @@ public class GameServer {
     private final int maxPlayers = 2;
     private int numPlayers;
 
-    private int pinkScore = 0;
-    private int purpScore = 0;
+    private int pinkScore;
+    private int purpScore;
     private int[][] board;
     private boolean purpWon = false;
     private boolean pinkWon = false;
+    private boolean serverError;
 
     public GameServer() {
         System.out.println(" --------- Server started --------- ");
         numPlayers = 0;
         turnsMade = 0;
         board = new int[6][7];
+
+        pinkScore = 0;
+        purpScore = 0;
+
+        serverError = false;
 
         try {
             ss = new ServerSocket(10101);
@@ -36,7 +42,7 @@ public class GameServer {
         try {
             System.out.println("Waiting for connections...");
 
-            while (numPlayers < maxPlayers) {
+            while (numPlayers < maxPlayers && !serverError) {
                 Socket s = ss.accept();
 
                 numPlayers++;
@@ -57,7 +63,7 @@ public class GameServer {
             System.out.println("All players have joined.");
 
         } catch (IOException e) {
-            System.out.println("IOException in acceptConnections() from GameServer");
+            serverError = true;
         }
     }
 
@@ -70,22 +76,6 @@ public class GameServer {
         }
     }
 
-//    public boolean didPinkWin() {
-//        return pinkWon;
-//    }
-
-//    public boolean winnerExists() {
-//        return purpWon || pinkWon;
-//    }
-
-//    public int getPinkScore() {
-//        return pinkScore;
-//    }
-
-//    public int getPurpScore() {
-//        return purpScore;
-//    }
-
     public void purpWon() {
         purpScore++;
         purpWon = true;
@@ -95,10 +85,6 @@ public class GameServer {
         pinkScore++;
         pinkWon = true;
     }
-
-//    public int[][] getBoard() {
-//        return board;
-//    }
 
     private boolean getWinHor(int col, int row, int player) {
         try {
@@ -218,7 +204,7 @@ public class GameServer {
                 dataOut = new DataOutputStream(socket.getOutputStream());
 
             } catch (IOException e) {
-                System.out.println("IOException in SSC constructor");
+                serverError = true;
             }
         }
 
@@ -229,7 +215,7 @@ public class GameServer {
                 dataOut.writeInt(numPlayers);
                 dataOut.flush();
 
-                while (turnsMade < maxTurns) {
+                while (turnsMade < maxTurns && !serverError) {
                     String receivedData = dataIn.readUTF();
 
                     char last = receivedData.charAt(receivedData.length() - 1);
@@ -278,16 +264,12 @@ public class GameServer {
                     }
                 }
 
-                System.out.println("lol!");
-                if (!player1.socket.isClosed())
-                    player1.closeConnection();
-                if (!player2.socket.isClosed())
-                    player2.closeConnection();
-                if (!ss.isClosed())
-                    ss.close();
+                player1.closeConnection();
+                player2.closeConnection();
+                ss.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                serverError = true;
             }
         }
 
@@ -296,16 +278,15 @@ public class GameServer {
                 dataOut.writeUTF(s);
                 dataOut.flush();
             } catch (Exception e) {
-                System.out.println("IOException in sendDataToClient() from SSC");
+                serverError = true;
             }
         }
 
         public void closeConnection() {
             try {
                 socket.close();
-                System.out.println("Connection closed.");
             } catch (IOException e) {
-                System.out.println("IOException in closeConnection() from SSC");
+                serverError = true;
             }
         }
     }
